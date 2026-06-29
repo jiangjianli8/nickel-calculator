@@ -1,11 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang=""zh-CN"">
 <head>
-<meta charset="UTF-8">
-
-<meta http-equiv=""Cache-Control"" content=""no-cache, no-store, must-revalidate"">
-<meta http-equiv=""Pragma"" content=""no-cache"">
-<meta http-equiv=""Expires"" content=""0""><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta charset=""UTF-8"">
+<meta name=""viewport"" content=""width=device-width, initial-scale=1.0, user-scalable=no"">
 <title>镍矿石计算器</title>
 <style>
 :root {
@@ -14,7 +11,7 @@
   --gold: #daa520; --accent: #4ecdc4; --danger: #e05555; --border: #3a3a48; --radius: 12px;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; justify-content:center; padding:16px; }
+body { font-family: -apple-system,BlinkMacSystemFont,""Segoe UI"",""PingFang SC"",""Microsoft YaHei"",sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; justify-content:center; padding:16px; }
 .container { width:100%; max-width:520px; }
 .header { text-align:center; padding:24px 0 16px; }
 .header h1 { font-size:2.2rem; font-weight:900; background:linear-gradient(135deg,var(--ni-light),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
@@ -28,29 +25,10 @@ body { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","M
 .price-card .unit { font-size:0.8rem; font-weight:400; color:var(--text2); }
 .price-card .meta { font-size:0.65rem; color:var(--text2); margin-top:4px; }
 .price-error { color:var(--danger); font-size:0.7rem; }
-.refresh-btn {
-  background: rgba(80,200,120,0.2);
-  border: 1px solid var(--ni-dark);
-  color: var(--ni-light);
-  padding: 4px 14px;
-  border-radius: 20px;
-  font-size: 0.7rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.refresh-btn:hover {
-  background: rgba(80,200,120,0.35);
-}
-.spinner {
-  display: inline-block;
-  width: 14px; height: 14px;
-  border: 2px solid var(--ni-dark);
-  border-top-color: var(--ni-light);
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
+.refresh-btn { background:rgba(80,200,120,0.2); border:1px solid var(--ni-dark); color:var(--ni-light); padding:4px 14px; border-radius:20px; font-size:0.7rem; cursor:pointer; transition:all 0.2s; }
+.refresh-btn:hover { background:rgba(80,200,120,0.35); }
+.spinner { display:inline-block; width:14px; height:14px; border:2px solid var(--ni-dark); border-top-color:var(--ni-light); border-radius:50%; animation:spin 0.6s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
 .calc-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px; margin-bottom:16px; }
 .calc-card h2 { font-size:0.85rem; font-weight:600; color:var(--text2); margin-bottom:14px; }
 .grade-row { margin-bottom:14px; }
@@ -82,73 +60,71 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:32px; h
 .result .price { font-size:2.8rem; font-weight:900; color:var(--ni-light); letter-spacing:-1px; }
 .result .price .unit { font-size:1rem; font-weight:400; color:var(--text2); margin-left:4px; }
 .breakdown { font-size:0.68rem; color:var(--text2); margin-top:8px; line-height:1.5; word-break:break-all; }
-.disclaimer { text-align:center; font-size:0.6rem; color:var(--text2); padding:12px 0; border-top:1px solid var(--border); margin-top:8px; }
+.disclaimer { text-align:center; font-size:0.75rem; color:var(--text2); padding:12px 0; border-top:1px solid var(--border); margin-top:8px; font-weight:600; }
 </style>
 </head>
 <body>
-<div class="container">
+<div class=""container"">
 
-  <div class="header">
+  <div class=""header"">
     <h1>镍矿石计算器</h1>
-    <div class="subtitle">基于SMM 1#电解镍现货行情</div>
+    <div class=""subtitle"">基于SMM 1#电解镍现货行情</div>
   </div>
 
-  <div class="price-card">
-    <div class="label"><span class="dot cache" id="dotNi"></span>SMM 1#电解镍现货价</div>
-    <div class="value" id="priceNi">--<span class="unit">元/吨</span></div>
-    <div class="meta" id="metaNi">加载中...</div>
-    <div style="margin-top:8px"><button class="refresh-btn" onclick="fetchPrices(true)">🔄 刷新</button></div>
+  <div class=""price-card"">
+    <div class=""label""><span class=""dot cache"" id=""dotNi""></span>SMM 1#电解镍现货价</div>
+    <div class=""value"" id=""priceNi"">--<span class=""unit"">元/吨</span></div>
+    <div class=""meta"" id=""metaNi"">加载中...</div>
+    <div style=""margin-top:8px""><button class=""refresh-btn"" onclick=""fetchPrices(true)"">🔄 刷新</button></div>
   </div>
 
-  <div class="ore-type">
-    <button class="active" onclick="setOreType('laterite')">红土镍矿</button>
-    <button onclick="setOreType('sulfide')">硫化镍矿</button>
+  <div class=""ore-type"">
+    <button class=""active"" onclick=""setOreType('laterite')"">红土镍矿</button>
+    <button onclick=""setOreType('sulfide')"">硫化镍矿</button>
   </div>
 
-  <div class="calc-card">
+  <div class=""calc-card"">
     <h2>矿石参数</h2>
-    <div class="grade-row">
-      <label>镍品位 Ni% <span class="val" id="gradeVal">1.80</span>%</label>
-      <input type="range" id="niGrade" min="0.5" max="3.0" step="0.05" value="1.80" oninput="calc()">
+    <div class=""grade-row"">
+      <label>镍品位 Ni% <span class=""val"" id=""gradeVal"">1.80</span>%</label>
+      <input type=""range"" id=""niGrade"" min=""0.5"" max=""3.0"" step=""0.05"" value=""1.80"" oninput=""calc()"">
     </div>
-    <div class="presets" id="gradePresets"></div>
-    <div class="param-row">
-      <div class="param-item">
-        <div class="lbl">计价系数</div>
-        <div class="v" id="coeff">88.0%</div>
+    <div class=""presets"" id=""gradePresets""></div>
+    <div class=""param-row"">
+      <div class=""param-item"">
+        <div class=""lbl"">计价系数</div>
+        <div class=""v"" id=""coeff"">88.0%</div>
       </div>
-      <div class="param-item">
-        <div class="lbl">冶炼加工费 TC (元/吨)</div>
-        <input type="number" id="tc" value="800" min="0" max="5000" step="50" oninput="calc()">
-      </div>
-    </div>
-    <div class="param-row">
-      <div class="param-item">
-        <div class="lbl">汇率 (USD/CNY)</div>
-        <input type="number" id="exchangeRate" value="7.25" min="6.5" max="8.0" step="0.01" oninput="calc()">
-      </div>
-      <div class="param-item">
-        <div class="lbl">水分 H&#x2082;O%</div>
-        <input type="number" id="moisture" value="35" min="20" max="45" step="1" oninput="calc()">
+      <div class=""param-item"">
+        <div class=""lbl"">冶炼加工费 TC (元/吨)</div>
+        <input type=""number"" id=""tc"" value=""800"" min=""0"" max=""5000"" step=""50"" oninput=""calc()"">
       </div>
     </div>
-    <div class="tax-toggle">
-      <span class="lbl" id="taxLabel">含税模式 (&divide;1.13)</span>
-      <label class="toggle-sw"><input type="checkbox" id="taxMode" checked onchange="calc()"><span class="slider"></span></label>
+    <div class=""param-row"">
+      <div class=""param-item"">
+        <div class=""lbl"">汇率 (USD/CNY)</div>
+        <input type=""number"" id=""exchangeRate"" value=""7.25"" min=""6.5"" max=""8.0"" step=""0.01"" oninput=""calc()"">
+      </div>
+      <div class=""param-item"">
+        <div class=""lbl"">水分 H&#x2082;O%</div>
+        <input type=""number"" id=""moisture"" value=""35"" min=""20"" max=""45"" step=""1"" oninput=""calc()"">
+      </div>
+    </div>
+    <div class=""tax-toggle"">
+      <span class=""lbl"" id=""taxLabel"">含税模式 (&divide;1.13)</span>
+      <label class=""toggle-sw""><input type=""checkbox"" id=""taxMode"" checked onchange=""calc()""><span class=""slider""></span></label>
     </div>
   </div>
 
-  <div class="calc-card">
-    <div class="result">
-      <div class="lbl">矿石计价</div>
-      <div class="price" id="orePrice">0<span class="unit">元/吨</span></div>
+  <div class=""calc-card"">
+    <div class=""result"">
+      <div class=""lbl"">矿石计价</div>
+      <div class=""price"" id=""orePrice"">0<span class=""unit"">元/吨</span></div>
     </div>
-    <div class="breakdown" id="breakdown"></div>
+    <div class=""breakdown"" id=""breakdown""></div>
   </div>
 
-  <div class="disclaimer">⚠ 仅供参考，实际交易以合同准<br>
-    数据来源：SMM上海有色网 · AKShare
-  </div>
+  <div class=""disclaimer"">矿链通1.0-佛山鑫善源</div>
 
 </div>
 
@@ -213,7 +189,7 @@ function calc() {
 
   document.getElementById('gradeVal').textContent = grade.toFixed(2);
   document.getElementById('coeff').textContent = coeff.toFixed(1) + '%';
-  document.getElementById('taxLabel').textContent = exVat ? '含税模式 ('÷1.13)' : '不含税模式 (直接计算)';
+  document.getElementById('taxLabel').textContent = exVat ? '含税模式 (÷1.13)' : '不含税模式 (直接计算)';
 
   var metalValue, formula;
   var priceStr = niPrice.toLocaleString();
@@ -227,13 +203,13 @@ function calc() {
   }
   var orePrice = metalValue - tc;
   if (orePrice < 0) orePrice = 0;
-  document.getElementById('orePrice').innerHTML = orePrice.toFixed(0) + '<span class="unit">元/吨</span>';
+  document.getElementById('orePrice').innerHTML = orePrice.toFixed(0) + '<span class=""unit"">元/吨</span>';
   document.getElementById('breakdown').textContent = formula + ' - TC ' + tc + ' = ' + orePrice.toFixed(0) + ' 元/吨';
 }
 
 function fetchPrices(force) {
   if (force) {
-    document.getElementById('priceNi').innerHTML = '<span class="spinner"></span>';
+    document.getElementById('priceNi').innerHTML = '<span class=""spinner""></span>';
     document.getElementById('metaNi').textContent = '正在获取最新价格...';
   }
   fetch('data/price.json?_=' + Date.now())
@@ -241,8 +217,8 @@ function fetchPrices(force) {
     .then(function(d) {
       if (d.price && d.price > 0) {
         niPrice = d.price;
-        document.getElementById('priceNi').innerHTML = d.price.toLocaleString() + '<span class="unit">元/吨</span>';
-        var metaText = (d.date || d.updated_at || '') + ' · ' + (d.source || 'SMM');
+        document.getElementById('priceNi').innerHTML = d.price.toLocaleString() + '<span class=""unit"">元/吨</span>';
+        var metaText = (d.date || d.updated_at || '') + ' Â· ' + (d.source || 'SMM');
         if (d.smm_high && d.smm_low) {
           metaText += ' | ' + d.smm_low + '~' + d.smm_high;
         }
@@ -252,7 +228,8 @@ function fetchPrices(force) {
       calc();
     })
     .catch(function() {
-      document.getElementById('metaNi').innerHTML = '<span class="price-error">暂用默认价</span>';
+      document.getElementById('priceNi').innerHTML = niPrice.toLocaleString() + '<span class=""unit"">元/吨</span>';
+      document.getElementById('metaNi').innerHTML = '<span class=""price-error"">暂用默认价 ' + niPrice.toLocaleString() + '</span>';
       document.getElementById('dotNi').className = 'dot cache';
       calc();
     });
