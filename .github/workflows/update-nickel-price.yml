@@ -1,0 +1,38 @@
+﻿name: Update Nickel Price
+
+on:
+  schedule:
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-price:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install akshare
+
+      - name: Fetch nickel price
+        run: python scripts/fetch-nickel-price.py
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data/price.json
+          if git diff --staged --quiet; then
+            echo 'No change'
+          else
+            git commit -m "Price update: 2026-06-29 09:13"
+            git push
+          fi
