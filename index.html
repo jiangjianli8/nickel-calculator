@@ -1,95 +1,482 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>镍矿石计算器</title>
+<title>镍矿石计价计算器</title>
 <style>
 :root {
-  --bg: #1a1a1e; --card: #252530; --card2: #2a2a38; --text: #e0e0e0; --text2: #a0a0b0;
-  --ni: #50c878; --ni-light: #7defa0; --ni-dark: #2e7d4f;
-  --gold: #daa520; --accent: #4ecdc4; --danger: #e05555; --border: #3a3a48; --radius: 12px;
+  --bg: #1a1a1e;
+  --card: #252530;
+  --card2: #2a2a38;
+  --text: #e0e0e0;
+  --text2: #a0a0b0;
+  --ni: #50c878;
+  --ni-light: #7defa0;
+  --ni-dark: #2e7d4f;
+  --gold: #daa520;
+  --accent: #4ecdc4;
+  --danger: #e05555;
+  --border: #3a3a48;
+  --radius: 12px;
+  --brand-blue: #2196F3;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; justify-content:center; padding:16px; }
-.container { width:100%; max-width:520px; }
-.header { text-align:center; padding:24px 0 16px; }
-.header h1 { font-size:2.2rem; font-weight:900; background:linear-gradient(135deg,var(--ni-light),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.header .subtitle { font-size:0.8rem; color:var(--text2); margin-top:4px; }
-.price-card { border:1px solid var(--ni-dark); border-radius:var(--radius); padding:18px; text-align:center; margin-bottom:16px; background:linear-gradient(135deg,#1a241e,#1a1e22); }
-.price-card .label { font-size:0.75rem; color:var(--text2); margin-bottom:6px; }
-.price-card .dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; }
-.price-card .dot.live { background:#4caf50; }
-.price-card .dot.cache { background:#ff9800; }
-.price-card .value { font-size:2rem; font-weight:800; color:var(--ni-light); }
-.price-card .unit { font-size:0.8rem; font-weight:400; color:var(--text2); }
-.price-card .meta { font-size:0.65rem; color:var(--text2); margin-top:4px; }
-.price-error { color:var(--danger); font-size:0.7rem; }
-.refresh-btn { background:rgba(80,200,120,0.2); border:1px solid var(--ni-dark); color:var(--ni-light); padding:4px 14px; border-radius:20px; font-size:0.7rem; cursor:pointer; transition:all 0.2s; }
-.refresh-btn:hover { background:rgba(80,200,120,0.35); }
-.spinner { display:inline-block; width:14px; height:14px; border:2px solid var(--ni-dark); border-top-color:var(--ni-light); border-radius:50%; animation:spin 0.6s linear infinite; }
-@keyframes spin { to { transform:rotate(360deg); } }
-.calc-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px; margin-bottom:16px; }
-.calc-card h2 { font-size:0.85rem; font-weight:600; color:var(--text2); margin-bottom:14px; }
-.grade-row { margin-bottom:14px; }
-.grade-row label { display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text2); margin-bottom:8px; }
-.grade-row .val { font-weight:800; color:var(--ni-light); font-size:1.1rem; }
-input[type=range] { -webkit-appearance:none; width:100%; height:8px; border-radius:4px; outline:none; background:linear-gradient(90deg,var(--ni-dark),var(--ni-light)); }
-input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:32px; height:32px; border-radius:50%; border:3px solid #fff; cursor:pointer; background:var(--ni-light); box-shadow:0 2px 10px rgba(80,200,120,0.4); }
-.presets { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:14px; }
-.presets button { background:var(--card2); border:1px solid var(--border); color:var(--text2); padding:4px 10px; border-radius:16px; font-size:0.68rem; cursor:pointer; transition:all 0.2s; }
-.presets button:hover { border-color:var(--ni); color:var(--ni-light); }
-.ore-type { display:flex; gap:6px; margin-bottom:14px; }
-.ore-type button { flex:1; padding:10px 8px; border:1px solid var(--border); background:var(--card2); color:var(--text2); border-radius:10px; font-size:0.75rem; cursor:pointer; transition:all 0.2s; }
-.ore-type button.active { border-color:var(--ni); background:rgba(80,200,120,0.12); color:var(--ni-light); font-weight:700; }
-.param-row { display:flex; gap:10px; margin-bottom:14px; }
-.param-item { flex:1; background:var(--card2); border-radius:8px; padding:10px 12px; text-align:center; }
-.param-item .lbl { font-size:0.65rem; color:var(--text2); margin-bottom:4px; }
-.param-item .v { font-size:1.1rem; font-weight:700; color:var(--accent); }
-.param-item input { background:var(--bg); border:1px solid var(--border); color:var(--text); width:90px; padding:4px 8px; border-radius:6px; font-size:0.78rem; text-align:center; }
-.tax-toggle { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--card2); border-radius:8px; margin-bottom:14px; }
-.tax-toggle .lbl { font-size:0.75rem; color:var(--text2); }
-.toggle-sw { position:relative; width:44px; height:24px; }
-.toggle-sw input { opacity:0; width:0; height:0; }
-.toggle-sw .slider { position:absolute; inset:0; background:#444; border-radius:12px; cursor:pointer; transition:0.3s; }
-.toggle-sw .slider:before { content:"; position:absolute; width:18px; height:18px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:0.3s; }
-.toggle-sw input:checked + .slider { background:var(--accent); }
-.toggle-sw input:checked + .slider:before { transform:translateX(20px); }
-.result { text-align:center; padding:20px 0 8px; }
-.result .lbl { font-size:0.75rem; color:var(--text2); margin-bottom:6px; }
-.result .price { font-size:3.5rem; font-weight:900; color:var(--ni-light); letter-spacing:-1px; line-height:1.1; }
-.result .price .unit { font-size:1rem; font-weight:400; color:var(--text2); margin-left:4px; }
-.breakdown { font-size:0.62rem; color:var(--text2); margin-top:10px; line-height:1.6; word-break:break-all; opacity:0.8; }
-.disclaimer { text-align:center; padding:16px; border-top:1px solid var(--border); margin-top:8px; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+.container { width:100%; max-width:520px; display:flex; flex-direction:column; min-height:calc(100vh - 32px); }
+.header { text-align: center; padding: 24px 0 16px; }
+.header h1 {
+  font-size: 2.2rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--ni-light), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.header .subtitle { font-size: 0.8rem; color: var(--text2); margin-top: 4px; }
+
+/* Price Card */
+.price-card {
+  background: linear-gradient(135deg, #1a241e, #1a1e22);
+  border: 1px solid var(--ni-dark);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.price-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -30%;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(80, 200, 120, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.price-label {
+  font-size: 0.75rem;
+  color: var(--ni-light);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.price-label .dot {
+  width: 8px; height: 8px;
+  background: #4caf50;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; box-shadow: 0 0 4px #4caf50; }
+  50% { opacity:0.4; box-shadow: 0 0 8px #4caf50; }
+}
+.price-value {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--ni-light);
+  line-height: 1;
+}
+.price-value .unit {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--text2);
+  margin-left: 4px;
+}
+.price-meta {
+  font-size: 0.7rem;
+  color: var(--text2);
+  margin-top: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.refresh-btn {
+  background: rgba(80, 200, 120, 0.2);
+  border: 1px solid var(--ni-dark);
+  color: var(--ni-light);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.refresh-btn:hover { background: rgba(80, 200, 120, 0.35); }
+.refresh-btn:active { transform: scale(0.95); }
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--ni-dark);
+  border-top-color: var(--ni-light);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Manual Price */
+.manual-price {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 0.75rem;
+}
+.manual-price input {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 4px 10px;
+  border-radius: 6px;
+  width: 100px;
+  font-size: 0.75rem;
+  text-align: center;
+}
+.manual-price button {
+  background: var(--ni-dark);
+  border: none;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+.price-error { color: var(--danger); font-size: 0.7rem; }
+
+/* Ore Type */
+.ore-type {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.ore-type button {
+  flex: 1;
+  padding: 12px 8px;
+  border: 1px solid var(--border);
+  background: var(--card2);
+  color: var(--text2);
+  border-radius: 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ore-type button.active {
+  border-color: var(--ni);
+  background: rgba(80, 200, 120, 0.12);
+  color: var(--ni-light);
+  font-weight: 700;
+}
+
+/* Calc Card */
+.calc-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.calc-card h2 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text2);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.calc-card h2 .icon { font-size: 1.2rem; }
+
+/* Grade Slider */
+.grade-section { margin-bottom: 16px; }
+.grade-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+.grade-label .name { font-size: 0.8rem; color: var(--text2); }
+.grade-label .value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--ni-light);
+}
+.grade-label .value .pct { font-size: 1rem; color: var(--text2); }
+.slider-wrap { position: relative; padding: 4px 0; }
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--ni-dark), var(--ni-light));
+  outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--ni-light);
+  border: 3px solid #fff;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(80, 200, 120, 0.5);
+}
+.grade-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6rem;
+  color: var(--text2);
+  padding: 4px 8px 0;
+}
+.grade-presets {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.grade-presets button {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.grade-presets button:hover {
+  border-color: var(--ni);
+  color: var(--ni-light);
+}
+.grade-presets button.active {
+  background: rgba(80, 200, 120, 0.2);
+  border-color: var(--ni);
+  color: var(--ni-light);
+}
+
+/* Param Row */
+.param-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.param-item {
+  flex: 1;
+  background: var(--card2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  text-align: center;
+}
+.param-item .lbl {
+  font-size: 0.65rem;
+  color: var(--text2);
+  margin-bottom: 4px;
+}
+.param-item .v {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.param-item input {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  width: 90px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+/* Tax Toggle */
+.tax-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--card2);
+  border-radius: 8px;
+  margin-bottom: 14px;
+}
+.tax-toggle .lbl { font-size: 0.75rem; color: var(--text2); }
+.toggle-sw { position: relative; width: 44px; height: 24px; }
+.toggle-sw input { opacity: 0; width: 0; height: 0; }
+.toggle-sw .slider {
+  position: absolute;
+  inset: 0;
+  background: #444;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.toggle-sw .slider:before {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  bottom: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+.toggle-sw input:checked + .slider { background: var(--accent); }
+.toggle-sw input:checked + .slider:before { transform: translateX(20px); }
+
+/* Result */
+.result-card {
+  background: linear-gradient(135deg, #1a241e, #1a1e22);
+  border: 2px solid var(--ni-dark);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.result-card .label {
+  font-size: 0.75rem;
+  color: var(--ni-light);
+  margin-bottom: 8px;
+}
+.result-card .price {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--gold);
+  line-height: 1;
+}
+.result-card .price .unit {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--text2);
+  margin-left: 4px;
+}
+.result-formula {
+  font-size: 0.62rem;
+  color: var(--text2);
+  margin-top: 8px;
+  line-height: 1.6;
+  word-break: break-all;
+  opacity: 0.8;
+}
+
+/* Coeff Table */
+.coeff-table-wrap {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+.coeff-table-wrap.open { max-height: 800px; }
+.coeff-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+  margin-top: 12px;
+}
+.coeff-table th, .coeff-table td {
+  padding: 8px 12px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+.coeff-table th {
+  color: var(--text2);
+  font-weight: 500;
+  font-size: 0.7rem;
+}
+.coeff-table tr:hover td { background: rgba(80, 200, 120, 0.08); }
+.coeff-table tr.current td { background: rgba(80, 200, 120, 0.2); color: var(--ni-light); font-weight: 600; }
+.toggle-table-btn {
+  width: 100%;
+  background: none;
+  border: 1px dashed var(--border);
+  color: var(--text2);
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  margin-top: 8px;
+}
+.toggle-table-btn:hover { border-color: var(--ni); color: var(--ni-light); }
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 16px;
+  font-size: 0.65rem;
+  color: var(--text2);
+  width: 100%;
+  max-width: 520px;
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+.footer .brand {
+  font-weight: 900;
+  color: var(--brand-blue);
+  font-size: 1.95rem;
+}
 </style>
 </head>
 <body>
 <div class="container">
-
+  <!-- Header -->
   <div class="header">
-    <h1>镍矿石计算器</h1>
+    <h1>镍矿石计价计算器</h1>
     <div class="subtitle">基于SMM 1#电解镍现货行情</div>
   </div>
 
+  <!-- Price Card -->
   <div class="price-card">
-    <div class="label"><span class="dot cache" id="dotNi"></span>SMM 1#电解镍现货价</div>
-    <div class="value" id="priceNi">--<span class="unit">元/吨</span></div>
-    <div class="meta" id="metaNi">加载中...</div>
-    <div style="margin-top:8px"><button class="refresh-btn" onclick="fetchPrices(true)">🔄 刷新</button></div>
+    <div class="price-label">
+      <span class="dot" id="statusDot"></span>
+      SMM 1#电解镍（现货）
+    </div>
+    <div class="price-value" id="priceDisplay">--<span class="unit">元/吨</span></div>
+    <div class="price-meta">
+      <span id="priceTime">加载中...</span>
+      <button class="refresh-btn" onclick="fetchPrices(true)">🔄 刷新</button>
+    </div>
+    <div class="manual-price" id="manualPriceRow" style="display:none">
+      <span>手动输入:</span>
+      <input type="number" id="manualPriceInput" placeholder="价格 (元/吨)">
+      <button onclick="setManualPrice()">确定</button>
+    </div>
+    <span style="font-size:0.65rem;color:var(--text2);cursor:pointer;margin-top:4px;display:inline-block"
+      id="manualToggle"
+      onclick="document.getElementById('manualPriceRow').style.display='flex';this.style.display='none'">
+      或手动输入价格
+    </span>
   </div>
 
+  <!-- Ore Type -->
   <div class="ore-type">
     <button class="active" onclick="setOreType('laterite')">红土镍矿</button>
     <button onclick="setOreType('sulfide')">硫化镍矿</button>
   </div>
 
+  <!-- Calculator Card -->
   <div class="calc-card">
-    <h2>矿石参数</h2>
-    <div class="grade-row">
-      <label>镍品位 Ni% <span class="val" id="gradeVal">1.80</span>%</label>
-      <input type="range" id="niGrade" min="0.5" max="3.0" step="0.05" value="1.80" oninput="calc()">
+    <h2><span class="icon">📐</span> 矿石计价计算</h2>
+
+    <div class="grade-section">
+      <div class="grade-label">
+        <span class="name">镍品位 Ni%</span>
+        <span class="value" id="gradeValue">1.80<span class="pct">%</span></span>
+      </div>
+      <div class="slider-wrap">
+        <input type="range" id="niGrade" min="0.5" max="3.0" step="0.05" value="1.80" oninput="calc()">
+      </div>
+      <div class="grade-ticks"><span>0.5%</span><span>1.0%</span><span>1.5%</span><span>2.0%</span><span>2.5%</span><span>3.0%</span></div>
+      <div class="grade-presets" id="gradePresets"></div>
     </div>
-    <div class="presets" id="gradePresets"></div>
+
     <div class="param-row">
       <div class="param-item">
         <div class="lbl">计价系数</div>
@@ -100,32 +487,45 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:32px; h
         <input type="number" id="tc" value="800" min="0" max="5000" step="50" oninput="calc()">
       </div>
     </div>
+
     <div class="param-row">
       <div class="param-item">
-        <div class="lbl">汇率 (USD/CNY)</div>
-        <input type="number" id="exchangeRate" value="7.25" min="6.5" max="8.0" step="0.01" oninput="calc()">
+        <div class="lbl">汇率 (USD&#x2192;CNY) <span style="color:#4caf50;font-size:0.6rem" id="fxStatus">实时</span></div>
+        <input type="number" id="exchangeRate" value="7.25" min="6.5" max="8.0" step="0.01" onchange="onFxManual()" onfocus="onFxManual()" oninput="calc()">
+        <div style="font-size:0.6rem;color:var(--text2);margin-top:2px" id="fxSource"></div>
       </div>
       <div class="param-item">
-        <div class="lbl">水分 H&#x2082;O%</div>
+        <div class="lbl">水分 H₂O%</div>
         <input type="number" id="moisture" value="35" min="20" max="45" step="1" oninput="calc()">
       </div>
     </div>
+
     <div class="tax-toggle">
-      <span class="lbl" id="taxLabel">含税模式 (&divide;1.13)</span>
-      <label class="toggle-sw"><input type="checkbox" id="taxMode" checked onchange="calc()"><span class="slider"></span></label>
+      <span class="lbl" id="taxLabel">含税模式 (÷1.13)</span>
+      <label class="toggle-sw">
+        <input type="checkbox" id="taxMode" checked onchange="calc()">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <!-- Coeff Table Toggle -->
+    <button class="toggle-table-btn" onclick="toggleTable()">📊 查看系数参考表</button>
+    <div class="coeff-table-wrap" id="coeffTableWrap">
+      <table class="coeff-table" id="coeffTable"></table>
     </div>
   </div>
 
-  <div class="calc-card">
-    <div class="result">
-      <div class="lbl">矿石计价</div>
-      <div class="price" id="orePrice">0<span class="unit">元/吨</span></div>
-    </div>
-    <div class="breakdown" id="breakdown"></div>
+  <!-- Result Card -->
+  <div class="result-card">
+    <div class="label">💰 镍矿石单价</div>
+    <div class="price" id="orePrice">0<span class="unit">元/吨</span></div>
+    <div class="result-formula" id="breakdown"></div>
   </div>
 
-  <div class="disclaimer"><span style="font-weight:900;color:#2196F3;font-size:1.95rem">矿链通1.0</span><span style="font-weight:900;color:#2196F3;font-size:1.95rem">-佛山鑫善源</span></div>
-
+<!-- Footer -->
+<div class="footer">
+  <span class="brand">矿链通1.0</span>
+  <span class="brand"> -佛山鑫善源</span>
 </div>
 
 <script>
@@ -139,8 +539,10 @@ var SULFIDE_COEFF = [
   [1.5,89],[1.6,90],[1.7,90],[1.8,91],[2.0,92],
   [2.2,93],[2.5,94],[3.0,95]
 ];
+
 var currentOreType = 'laterite';
 var niPrice = 127250;
+var manualOverride = false;
 
 function getCoeff(table, grade) {
   if (grade <= table[0][0]) return table[0][1];
@@ -154,12 +556,66 @@ function getCoeff(table, grade) {
   return table[table.length-1][1];
 }
 
+var fxManual = false;
+var currentFxRate = 7.25;
+
+function fetchFxRate() {
+  var API_LIST = [
+    'https://api.frankfurter.app/latest?from=USD&to=CNY',
+    'https://api.exchangerate-api.com/v4/latest/USD',
+    'https://open.er-api.com/v6/latest/USD'
+  ];
+  function tryApi(idx) {
+    if (idx >= API_LIST.length) {
+      document.getElementById('fxStatus').textContent = '离线';
+      document.getElementById('fxStatus').style.color = '#e05555';
+      document.getElementById('fxSource').textContent = 'API不可用，使用手动汇率';
+      return;
+    }
+    fetch(API_LIST[idx], { signal: AbortSignal.timeout(8000) })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var rate, dateStr = '';
+        if (data.rates && data.rates.CNY) {
+          rate = data.rates.CNY;
+          dateStr = data.date || '';
+        }
+        if (rate && rate > 0) {
+          currentFxRate = parseFloat(rate.toFixed(4));
+          if (!fxManual) {
+            document.getElementById('exchangeRate').value = currentFxRate;
+          }
+          document.getElementById('fxStatus').textContent = '实时';
+          document.getElementById('fxStatus').style.color = '#4caf50';
+          document.getElementById('fxSource').textContent = '来源: ' + API_LIST[idx].split('/')[2] + (dateStr ? ' (' + dateStr + ')' : '');
+          if (!fxManual) calc();
+        } else {
+          tryApi(idx + 1);
+        }
+      })
+      .catch(function() { tryApi(idx + 1); });
+  }
+  tryApi(0);
+}
+
+function onFxManual() {
+  fxManual = true;
+  document.getElementById('fxStatus').textContent = '手动';
+  document.getElementById('fxStatus').style.color = '#daa520';
+  document.getElementById('fxSource').textContent = '手动输入汇率';
+}
+
+function getCoeffTable() {
+  return currentOreType === 'laterite' ? LATERITE_COEFF : SULFIDE_COEFF;
+}
+
 function setOreType(type) {
   currentOreType = type;
   document.querySelectorAll('.ore-type button').forEach(function(b, i) {
     b.classList.toggle('active', (i === 0 && type === 'laterite') || (i === 1 && type === 'sulfide'));
   });
   buildPresets();
+  buildCoeffTable();
   calc();
 }
 
@@ -184,63 +640,147 @@ function calc() {
   var moisture = parseFloat(document.getElementById('moisture').value) || 35;
   var exVat = document.getElementById('taxMode').checked;
   var divider = exVat ? 1.13 : 1;
-  var coeffTable = currentOreType === 'laterite' ? LATERITE_COEFF : SULFIDE_COEFF;
+  var coeffTable = getCoeffTable();
   var coeff = getCoeff(coeffTable, grade);
 
-  document.getElementById('gradeVal').textContent = grade.toFixed(2);
+  document.getElementById('gradeValue').innerHTML = grade.toFixed(2) + '<span class="pct">%</span>';
   document.getElementById('coeff').textContent = coeff.toFixed(1) + '%';
-  document.getElementById('taxLabel').textContent = exVat ? '含税模式 (÷1.13)' : '不含税模式 (直接计算)';
+  document.getElementById('taxLabel').innerHTML = exVat ? '含税模式 (&divide;1.13)' : '不含税模式 (直接计算)';
 
   var metalValue, formula;
   var priceStr = niPrice.toLocaleString();
-  var vatStr = exVat ? ' ÷1.13' : '';
+  var vatStr = exVat ? ' &divide;1.13' : '';
+
   if (currentOreType === 'laterite') {
     metalValue = (niPrice / divider) * (grade / 100) * (coeff / 100) * (1 - moisture / 100);
-    formula = 'SMM ' + priceStr + vatStr + ' × ' + grade.toFixed(2) + '% × ' + coeff.toFixed(1) + '% × (1-' + moisture + '%水分)';
+    formula = 'SMM ' + priceStr + vatStr + ' &times; ' + grade.toFixed(2) + '% &times; ' + coeff.toFixed(1) + '% &times; (1-' + moisture + '%水分)';
   } else {
     metalValue = (niPrice / divider) * (grade / 100) * (coeff / 100);
-    formula = 'SMM ' + priceStr + vatStr + ' × ' + grade.toFixed(2) + '% × ' + coeff.toFixed(1) + '%';
+    formula = 'SMM ' + priceStr + vatStr + ' &times; ' + grade.toFixed(2) + '% &times; ' + coeff.toFixed(1) + '%';
   }
+
   var orePrice = metalValue - tc;
   if (orePrice < 0) orePrice = 0;
+
   document.getElementById('orePrice').innerHTML = orePrice.toFixed(0) + '<span class="unit">元/吨</span>';
   document.getElementById('breakdown').textContent = formula + ' - TC ' + tc + ' = ' + orePrice.toFixed(0) + ' 元/吨';
+
+  highlightTableRow(grade);
+  updatePresetButtons(grade);
 }
 
+function highlightTableRow(grade) {
+  var rows = document.querySelectorAll('#coeffTable tr');
+  rows.forEach(function(r) { r.classList.remove('current'); });
+  var rounded = Math.round(grade * 10) / 10;
+  rows.forEach(function(r) {
+    var cells = r.querySelectorAll('td');
+    for (var i = 0; i < cells.length; i += 2) {
+      if (cells[i] && cells[i].textContent && parseFloat(cells[i].textContent) === rounded) {
+        r.classList.add('current');
+      }
+    }
+  });
+}
+
+function updatePresetButtons(grade) {
+  var buttons = document.querySelectorAll('#gradePresets button');
+  buttons.forEach(function(btn) {
+    var g = parseFloat(btn.textContent);
+    if (Math.abs(g - grade) < 0.03) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+}
+
+// ===== Price Fetch =====
 function fetchPrices(force) {
   if (force) {
-    document.getElementById('priceNi').innerHTML = '<span class="spinner"></span>';
-    document.getElementById('metaNi').textContent = '正在获取最新价格...';
+    document.getElementById('priceDisplay').innerHTML = '<span class="spinner"></span>';
+    document.getElementById('priceTime').textContent = '正在获取最新价格...';
   }
+
   fetch('data/price.json?_=' + Date.now())
     .then(function(r) { return r.json(); })
     .then(function(d) {
-      if (d.price && d.price > 0) {
+      if (!manualOverride && d.price && d.price > 0) {
         niPrice = d.price;
-        document.getElementById('priceNi').innerHTML = d.price.toLocaleString() + '<span class="unit">元/吨</span>';
-        var metaText = (d.date || d.updated_at || '') + ' Â· ' + (d.source || 'SMM');
-        if (d.smm_high && d.smm_low) {
-          metaText += ' | ' + d.smm_low + '~' + d.smm_high;
-        }
-        document.getElementById('metaNi').textContent = metaText;
-        document.getElementById('dotNi').className = 'dot live';
+      }
+      document.getElementById('priceDisplay').innerHTML = niPrice.toLocaleString() + '<span class="unit">元/吨</span>';
+      var metaText = (d.date || d.updated_at || '') + ' · ' + (d.source || 'SMM');
+      if (d.smm_high && d.smm_low) {
+        metaText += ' | ' + d.smm_low + '~' + d.smm_high;
+      }
+      if (!manualOverride) {
+        document.getElementById('priceTime').textContent = metaText;
+        var dot = document.getElementById('statusDot');
+        if (dot) dot.style.background = '#4caf50';
       }
       calc();
     })
     .catch(function() {
-      document.getElementById('priceNi').innerHTML = niPrice.toLocaleString() + '<span class="unit">元/吨</span>';
-      document.getElementById('metaNi').innerHTML = '<span class="price-error">暂用默认价 ' + niPrice.toLocaleString() + '</span>';
-      document.getElementById('dotNi').className = 'dot cache';
+      document.getElementById('priceDisplay').innerHTML = niPrice.toLocaleString() + '<span class="unit">元/吨</span>';
+      if (!manualOverride) {
+        document.getElementById('priceTime').innerHTML = '<span class="price-error">离线 · SMM参考价</span>';
+        var dot = document.getElementById('statusDot');
+        if (dot) dot.style.background = '#e05555';
+      }
       calc();
     });
 }
 
+function setManualPrice() {
+  var val = parseFloat(document.getElementById('manualPriceInput').value);
+  if (val > 0) {
+    niPrice = val;
+    manualOverride = true;
+    document.getElementById('priceDisplay').innerHTML = val.toLocaleString() + '<span class="unit">元/吨</span>';
+    document.getElementById('priceTime').textContent = '手动输入价格';
+    var dot = document.getElementById('statusDot');
+    if (dot) dot.style.background = '#daa520';
+    calc();
+  }
+}
+
+// ===== Coeff Table =====
+function buildCoeffTable() {
+  var table = document.getElementById('coeffTable');
+  var coeffTable = getCoeffTable();
+  var label = currentOreType === 'laterite' ? '红土镍矿' : '硫化镍矿';
+  var html = '<tr><th>Ni% (' + label + ')</th><th>系数</th><th>Ni% (' + label + ')</th><th>系数</th></tr>';
+  var half = Math.ceil(coeffTable.length / 2);
+  for (var i = 0; i < half; i++) {
+    var left = coeffTable[i];
+    var right = coeffTable[i + half];
+    html += '<tr><td>' + left[0] + '%</td><td>' + left[1] + '%</td>';
+    if (right) {
+      html += '<td>' + right[0] + '%</td><td>' + right[1] + '%</td>';
+    } else {
+      html += '<td></td><td></td>';
+    }
+    html += '</tr>';
+  }
+  table.innerHTML = html;
+}
+
+function toggleTable() {
+  var wrap = document.getElementById('coeffTableWrap');
+  wrap.classList.toggle('open');
+}
+
+// ===== Init =====
 function init() {
   buildPresets();
+  buildCoeffTable();
   fetchPrices();
+  fetchFxRate();
   calc();
   setInterval(fetchPrices, 60000);
+  setInterval(fetchFxRate, 600000);
 }
+
 init();
 </script>
 </body>
