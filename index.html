@@ -57,10 +57,10 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:32px; h
 .toggle-sw input:checked + .slider:before { transform:translateX(20px); }
 .result { text-align:center; padding:20px 0 8px; }
 .result .lbl { font-size:0.75rem; color:var(--text2); margin-bottom:6px; }
-.result .price { font-size:2.8rem; font-weight:900; color:var(--ni-light); letter-spacing:-1px; }
+.result .price { font-size:3.5rem; font-weight:900; color:var(--ni-light); letter-spacing:-1px; line-height:1.1; }
 .result .price .unit { font-size:1rem; font-weight:400; color:var(--text2); margin-left:4px; }
-.breakdown { font-size:0.68rem; color:var(--text2); margin-top:8px; line-height:1.5; word-break:break-all; }
-.disclaimer { text-align:center; font-size:0.75rem; color:var(--text2); padding:12px 0; border-top:1px solid var(--border); margin-top:8px; font-weight:600; }
+.breakdown { font-size:0.62rem; color:var(--text2); margin-top:10px; line-height:1.6; word-break:break-all; opacity:0.8; }
+.disclaimer { text-align:center; padding:16px; border-top:1px solid var(--border); margin-top:8px; }
 </style>
 </head>
 <body>
@@ -124,7 +124,7 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:32px; h
     <div class="breakdown" id="breakdown"></div>
   </div>
 
-  <div class="disclaimer">矿链通1.0-佛山鑫善源</div>
+  <div class="disclaimer"><span style="font-weight:900;color:#2196F3;font-size:1.95rem">矿链通1.0</span><span style="font-weight:900;color:#2196F3;font-size:1.95rem">-佛山鑫善源</span></div>
 
 </div>
 
