@@ -1,4 +1,4 @@
-﻿name: Update Nickel Price
+name: Update Nickel Price
 
 on:
   schedule:
@@ -8,6 +8,7 @@ on:
 jobs:
   update-price:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
     steps:
@@ -33,6 +34,6 @@ jobs:
           if git diff --staged --quiet; then
             echo 'No change'
           else
-            git commit -m "Price update: 2026-06-29 09:13"
+            git commit -m "Price update: $(date +'%Y-%m-%d %H:%M')"
             git push
           fi
