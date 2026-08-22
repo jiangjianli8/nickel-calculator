@@ -1,10 +1,8 @@
 {
   "symbol": "SMM 1#电解镍",
-  "price": 128800,
+  "price": 129783,
   "unit": "元/吨",
-  "updated_at": "2026-08-22 14:42:23",
-  "source": "smm_ajax",
-  "date": "2026-08-21",
-  "smm_high": "129000",
-  "smm_low": "128600"
+  "updated_at": "2026-08-22 16:32:56",
+  "source": "akshare_smm",
+  "date": "20260821"
 }
