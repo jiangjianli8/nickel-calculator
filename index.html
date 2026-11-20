@@ -1348,11 +1348,15 @@ function calc() {
 
   var grade = parseFloat(document.getElementById('niGrade').value);
 
-  var tc = parseFloat(document.getElementById('tc').value) || 800;
+  // 修复：|| 会把合法的 0 吃掉（TC=0 免加工费、水分=0 干矿都会被替换成默认值）
+  var _tc = parseFloat(document.getElementById('tc').value);
+  var tc = isNaN(_tc) ? 800 : _tc;
 
-  var exchangeRate = parseFloat(document.getElementById('exchangeRate').value) || 7.25;
+  var _fx = parseFloat(document.getElementById('exchangeRate').value);
+  var exchangeRate = isNaN(_fx) ? 7.25 : _fx;
 
-  var moisture = parseFloat(document.getElementById('moisture').value) || 35;
+  var _moist = parseFloat(document.getElementById('moisture').value);
+  var moisture = isNaN(_moist) ? 35 : _moist;
 
   var exVat = document.getElementById('taxMode').checked;
 
